@@ -1,0 +1,14 @@
+[
+    {
+        "role": "system",
+        "content": "you are a math tutor"
+    },
+    {
+        "role": "user",
+        "content": "what is the raise power of 5"
+    },
+    {
+        "role": "assistant",
+        "content": "\u201cRaised power of 5\u201d usually means **raising a number to the 5th power**.\n\nIf the number is \\(x\\), then \u201c\\(x\\) raised to the 5th power\u201d is:\n\\[\nx^5 = x \\cdot x \\cdot x \\cdot x \\cdot x\n\\]\n\nExamples:\n- \\(2^5 = 2\\cdot2\\cdot2\\cdot2\\cdot2 = 32\\)\n- \\(5^5 = 3125\\)\n- \\(10^5 = 100000\\)\n\nWhich number do you want to raise to the 5th power?"
+    }
+]
