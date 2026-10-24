@@ -6,28 +6,89 @@ import json
 from datetime import datetime
 
 st.set_page_config(
-    page_title="Custom Assistant",
-    page_icon="🤖",
+    page_title="Smart AI Assistant",
+    page_icon="✨",
     layout="wide"
 )
+
+# --- Custom Modern UI Styles ---
+st.markdown("""
+<style>
+    /* Global Styling */
+    .stApp {
+        background-color: #0e1117;
+        color: #ffffff;
+    }
+    
+    /* Sidebar Styling */
+    section[data-testid="stSidebar"] {
+        background-color: #161b22;
+        border-right: 1px solid #30363d;
+    }
+    
+    /* Modern Card Layout for Login */
+    .login-card {
+        background: #161b22;
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        border: 1px solid #30363d;
+        max-width: 500px;
+        margin: 80px auto;
+        text-align: center;
+    }
+
+    /* Input Field Polish */
+    .stTextInput input {
+        background-color: #0d1117 !important;
+        color: #ffffff !important;
+        border: 1px solid #30363d !important;
+        border-radius: 8px !important;
+    }
+    
+    /* Buttons */
+    .stButton button {
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    /* Chat Message Bubbles */
+    .stChatMessage {
+        border-radius: 12px;
+        padding: 12px;
+        margin-bottom: 10px;
+        border: 1px solid #30363d;
+    }
+</style>
+""", unsafe_allow_html=True)
 
 # Initialize session state for API key
 if "api_key" not in st.session_state:
     st.session_state.api_key = os.environ.get("OPENAI_API_KEY", "")
 
-# Gatekeeper: Ask for API key before showing any other app content
+# Gatekeeper: Attractive Login Card
 if not st.session_state.api_key:
-    st.subheader("Smart AI Assistant")
-    st.write("Please enter your OpenAI API key to access the application.")
+    st.markdown("""
+        <div class="login-card">
+            <h2 style="color: #58a6ff; margin-bottom: 10px;">✨ Smart AI Assistant</h2>
+            <p style="color: #8b949e; font-size: 14px; margin-bottom: 25px;">
+                Enter your OpenAI API key below to unlock your workspace.
+            </p>
+        </div>
+    """, unsafe_allow_html=True)
     
-    api_input = st.text_input("OpenAI API Key", type="password")
-    if st.button("Submit Key"):
-        if api_input:
-            st.session_state.api_key = api_input
-            os.environ["OPENAI_API_KEY"] = api_input
-            st.rerun()
-        else:
-            st.error("Please enter a valid API key.")
+    # Center input elements cleanly inside columns
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        api_input = st.text_input("OpenAI API Key", type="password", label_visibility="collapsed", placeholder="sk-...")
+        if st.button("Access Assistant", use_container_width=True, type="primary"):
+            if api_input:
+                st.session_state.api_key = api_input
+                os.environ["OPENAI_API_KEY"] = api_input
+                st.rerun()
+            else:
+                st.error("Please enter a valid API key.")
     st.stop()
 
 # --- Main App ---
@@ -37,7 +98,6 @@ CHAT_DIR = "saved_chats"
 os.makedirs(CHAT_DIR, exist_ok=True)
 
 def get_saved_chats():
-    """Returns a list of saved chat files sorted by newest first."""
     if not os.path.exists(CHAT_DIR):
         return []
     files = [f for f in os.listdir(CHAT_DIR) if f.endswith(".json")]
@@ -45,21 +105,17 @@ def get_saved_chats():
     return files
 
 def get_chat_title(file_path):
-    """Reads the JSON file and returns a title based on the first user message."""
     try:
         with open(file_path, "r") as f:
             data = json.load(f)
-            # Find the first user message content
             for item in data:
                 if item["role"] == "user":
                     text = item["content"]
-                    # Truncate to ~30 characters for clean sidebar display
-                    return text[:30] + "..." if len(text) > 30 else text
+                    return text[:28] + "..." if len(text) > 28 else text
     except:
         pass
-    return "New Chat"
+    return "New Conversation"
 
-# Initialize session state variables
 if "current_chat_id" not in st.session_state:
     saved_files = get_saved_chats()
     if saved_files:
@@ -82,7 +138,6 @@ if 'messages' not in st.session_state:
                     st.session_state.messages.append(AIMessage(content=item["content"]))
 
 def save_current_chat():
-    """Saves current messages to individual JSON file."""
     if not st.session_state.messages:
         return
     chat_data = []
@@ -98,21 +153,21 @@ def save_current_chat():
     with open(file_path, "w") as f:
         json.dump(chat_data, f, indent=4)
 
-# --- Sidebar UI ---
+# --- Modern Sidebar ---
 with st.sidebar:
-    st.subheader("🤖 Smart AI Assistant")
+    st.markdown("### ✨ Smart AI")
     
-    if st.button("➕ New chat", use_container_width=True):
+    if st.button("➕ New Chat", use_container_width=True, type="primary"):
         save_current_chat()
         st.session_state.current_chat_id = f"chat_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
         st.session_state.messages = []
         st.rerun()
         
     st.divider()
-    system_message = st.text_input(label='System role', value=" ")
+    system_message = st.text_input(label='System Role', value="You are a helpful assistant.")
 
     st.divider()
-    st.markdown("### Chat History")
+    st.markdown("💬 **Recent Chats**")
     
     saved_chats = get_saved_chats()
     for chat_file in saved_chats:
@@ -120,9 +175,9 @@ with st.sidebar:
         display_name = get_chat_title(file_path)
             
         is_selected = (chat_file == st.session_state.current_chat_id)
-        button_type = "primary" if is_selected else "secondary"
+        btn_type = "primary" if is_selected else "secondary"
         
-        if st.button(display_name, key=chat_file, type=button_type, use_container_width=True):
+        if st.button(display_name, key=chat_file, type=btn_type, use_container_width=True):
             save_current_chat()
             st.session_state.current_chat_id = chat_file
             st.session_state.messages = []
@@ -138,8 +193,9 @@ with st.sidebar:
                             st.session_state.messages.append(AIMessage(content=item["content"]))
             st.rerun()
 
-# --- Main Page Chat Interface ---
-st.subheader("Smart AI Assistant")
+# --- Main Workspace Header ---
+st.markdown("### 💬 Smart AI Assistant Workspace")
+st.divider()
 
 if system_message:
     if not any(isinstance(x, SystemMessage) for x in st.session_state.messages):
@@ -151,24 +207,26 @@ if system_message:
 
 chat = ChatOpenAI(model_name='gpt-4o', temperature=0.5)
 
+# Render Chat History
 for msg in st.session_state.messages:
     if isinstance(msg, HumanMessage):
-        with st.chat_message("human"):
+        with st.chat_message("human", avatar="👤"):
             st.write(msg.content)
     elif isinstance(msg, AIMessage):
-        with st.chat_message("ai"):
+        with st.chat_message("ai", avatar="✨"):
             st.write(msg.content)
 
-if user_prompt := st.chat_input("Send a message..."):
+# Bottom Floating Input Box
+if user_prompt := st.chat_input("Type your message here..."):
     st.session_state.messages.append(HumanMessage(content=user_prompt))
-    with st.chat_message("human"):
+    with st.chat_message("human", avatar="👤"):
         st.write(user_prompt)
 
-    with st.chat_message("ai"):
-        with st.spinner('Working on your request ...'):
+    with st.chat_message("ai", avatar="✨"):
+        with st.spinner('Thinking...'):
             response = chat.invoke(st.session_state.messages)
             st.write(response.content)
 
     st.session_state.messages.append(AIMessage(content=response.content))
     save_current_chat()
-    st.rerun() # Rerun immediately so the sidebar chat title updates automatically from the first prompt
+    st.rerun()
