@@ -14,11 +14,11 @@ st.set_page_config(
 # --- Custom Modern UI Styles ---
 st.markdown("""
 <style>
-    /* Hide the top Streamlit header/toolbar */
+    /* Hide top header and toolbar */
     header {visibility: hidden !important;}
     .stAppHeader {display: none !important;}
     
-    /* Global Styling */
+    /* Global Background and Text Color */
     .stApp {
         background-color: #0e1117;
         color: #ffffff;
@@ -65,20 +65,28 @@ st.markdown("""
         border: 1px solid #30363d;
     }
 
-    /* Seamless Chat Input Container */
+    /* Target the bottom chat input docking area and remove its background container */
     [data-testid="stChatInput"] {
-        background-color: #0e1117 !important;
-        border: 1px solid #30363d !important;
-        border-radius: 12px !important;
+        background-color: transparent !important;
+        border: none !important;
+        padding-bottom: 20px;
     }
 
-    /* Transparent Text Area inside Chat Input */
+    /* Style the actual chat input text box as a sleek dark floating card */
+    [data-testid="stChatInput"] > div {
+        background-color: #161b22 !important;
+        border: 1px solid #30363d !important;
+        border-radius: 14px !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Inner text area styling */
     [data-testid="stChatInput"] textarea {
         background-color: transparent !important;
         color: #ffffff !important;
     }
 
-    /* Placeholder Text Color */
+    /* Placeholder Text */
     [data-testid="stChatInput"] textarea::placeholder {
         color: #8b949e !important;
     }
