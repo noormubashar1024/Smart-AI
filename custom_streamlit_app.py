@@ -50,6 +50,7 @@ st.markdown("""
         border-radius: 8px !important;
     }
     
+    
     /* Buttons */
     .stButton button {
         border-radius: 8px;
@@ -63,6 +64,23 @@ st.markdown("""
         padding: 12px;
         margin-bottom: 10px;
         border: 1px solid #30363d;
+    }
+    /* Fix Chat Input Container Background and Border */
+    [data-testid="stChatInput"] {
+        background-color: #161b22 !important;
+        border: 1px solid #30363d !important;
+        border-radius: 12px !important;
+    }
+
+    /* Fix the actual Text Area inside the Chat Input */
+    [data-testid="stChatInput"] textarea {
+        background-color: #161b22 !important;
+        color: #ffffff !important;
+    }
+
+    /* Placeholder Text Color */
+    [data-testid="stChatInput"] textarea::placeholder {
+        color: #8b949e !important;
     }
 </style>
 """, unsafe_allow_html=True)
