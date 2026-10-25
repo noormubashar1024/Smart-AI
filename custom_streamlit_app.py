@@ -14,6 +14,10 @@ st.set_page_config(
 # --- Custom Modern UI Styles ---
 st.markdown("""
 <style>
+    /* Hide the top Streamlit header/toolbar */
+    header {visibility: hidden !important;}
+    .stAppHeader {display: none !important;}
+    
     /* Global Styling */
     .stApp {
         background-color: #0e1117;
