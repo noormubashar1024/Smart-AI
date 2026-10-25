@@ -50,7 +50,6 @@ st.markdown("""
         border-radius: 8px !important;
     }
     
-    
     /* Buttons */
     .stButton button {
         border-radius: 8px;
@@ -65,16 +64,17 @@ st.markdown("""
         margin-bottom: 10px;
         border: 1px solid #30363d;
     }
-    /* Fix Chat Input Container Background and Border */
+
+    /* Seamless Chat Input Container */
     [data-testid="stChatInput"] {
-        background-color: #161b22 !important;
+        background-color: #0e1117 !important;
         border: 1px solid #30363d !important;
         border-radius: 12px !important;
     }
 
-    /* Fix the actual Text Area inside the Chat Input */
+    /* Transparent Text Area inside Chat Input */
     [data-testid="stChatInput"] textarea {
-        background-color: #161b22 !important;
+        background-color: transparent !important;
         color: #ffffff !important;
     }
 
